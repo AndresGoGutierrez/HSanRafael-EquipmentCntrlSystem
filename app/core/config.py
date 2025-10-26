@@ -30,10 +30,12 @@ class Settings(BaseSettings):
 
     # To Charge .env
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="allow",
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="allow",
     )
 
-    # Conversion list JSON to python
     @field_validator("BACKEND_CORS_ORIGINS", mode="before", check_fields=False)
     def parse_cors_origins(cls, v):
         if isinstance(v, str):
@@ -46,7 +48,6 @@ class Settings(BaseSettings):
             return [i.strip() for i in v.split(",") if i.strip()]
         return v or []
 
-    # ✅ Convertir DEBUG a booleano de forma robusta
     @field_validator("DEBUG", mode="before", check_fields=False)
     def parse_debug(cls, v):
         if isinstance(v, bool):
@@ -54,5 +55,6 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v.lower() in ("true", "1", "yes", "y")
         return bool(v)
+
 
 settings = Settings()
