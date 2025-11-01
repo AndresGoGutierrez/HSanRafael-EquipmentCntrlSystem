@@ -6,7 +6,7 @@ from typing import Optional
 class UserRole(str, Enum):
     """User roles in the system"""
 
-    SEGUIDAD = "seguridad"
+    SEGURIDAD = "seguridad"
     TI = "ti"
     ADMINISTRADOR = "administrador"
 
