@@ -3,7 +3,6 @@ from typing import List, Optional
 from pydantic import AnyUrl, field_validator
 import json
 
-
 class Settings(BaseSettings):
     # Application
     APP_NAME: str

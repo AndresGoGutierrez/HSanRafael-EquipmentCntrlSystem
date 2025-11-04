@@ -1,6 +1,8 @@
 from typing import List, Dict, Any, Optional
 from io import BytesIO
 from datetime import datetime
+from openpyxl.cell.cell import MergedCell
+
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -196,12 +198,16 @@ class ReportGenerator:
 
         # === Adjust column widths ===
         for column_cells in ws.columns:
+            # Encuentra la primera celda NO combinada
+            cell = next((c for c in column_cells if not isinstance(c, MergedCell)), None)
+            if cell is None:
+                continue  # Si toda la columna está combinada, la saltamos
+
             length = max(
-                (len(str(cell.value or "")) for cell in column_cells), default=10
+            (len(str(c.value or "")) for c in column_cells if not isinstance(c, MergedCell)),
+            default=10,
             )
-            ws.column_dimensions[column_cells[0].column_letter].width = min(
-                length + 2, 40
-            )
+            ws.column_dimensions[cell.column_letter].width = min(length + 2, 40)
 
         # === Save workbook ===
         buffer = BytesIO()

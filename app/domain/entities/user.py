@@ -19,12 +19,12 @@ class User:
 
     def __init__(
         self,
-        id: Optional[int],
-        username: str,
-        email: str,
-        full_name: str,
-        role: UserRole,
-        hashed_password: str,
+        id: Optional[int] = None,
+        username: str = "",
+        email: str = "",
+        full_name: str = "",
+        role: UserRole = UserRole.ADMINISTRADOR,
+        hashed_password: str = "",
         is_active: bool = True,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,
@@ -48,6 +48,6 @@ class User:
             UserRole.SEGUIDAD: 1,
         }
         return role_hierarchy.get(self.role, 0) >= role_hierarchy.get(required_role, 0)
-    
+
     def __repr__(self) -> str:
-        return f"<User(username='{self.username}', role='{self.role}')>" 
+        return f"<User(username='{self.username}', role='{self.role}')>"

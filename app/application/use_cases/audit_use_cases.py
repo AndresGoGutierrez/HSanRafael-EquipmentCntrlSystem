@@ -2,6 +2,7 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 from fastapi import Request
 
+from app.infrastructure.models.user_model import UserModel
 from app.domain.entities.audit_log import AuditLog, AuditAction
 from app.domain.entities.user import User
 from app.domain.ports.audit_log_repository import AuditLogRepository
@@ -128,3 +129,33 @@ class AuditUseCases:
             List of all AuditLog entries.
         """
         return self._audit_log_repository.get_all(skip, limit)
+    
+    def enrich_logs_with_user_data(self, logs: List[AuditLog]) -> List[dict]:
+        """
+        Adds user information (username and full name) to audit logs.
+
+        Ideally, this could be optimized at query level, 
+        but this method keeps responsibilities clear.
+        """
+        if not self.db:
+            raise ValueError("Database session not provided for enrichment.")
+
+        user_ids = {log.user_id for log in logs if log.user_id}
+        users = (
+            self.db.query(UserModel)
+            .filter(UserModel.id.in_(user_ids))
+            .all()
+        )
+
+        user_map = {user.id: user for user in users}
+
+        enriched = []
+        for log in logs:
+            user = user_map.get(log.user_id)
+            enriched.append({
+                **log.__dict__,
+                "user_username": user.username if user else None,
+                "user_full_name": user.full_name if user else None
+            })
+
+        return enriched
