@@ -4,7 +4,12 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+    bcrypt__default_rounds=12,
+    bcrypt__truncate_error=True  # Esto hará que bcrypt lance un error si la contraseña es muy larga
+)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

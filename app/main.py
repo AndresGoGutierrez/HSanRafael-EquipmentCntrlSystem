@@ -21,6 +21,7 @@ from app.presentation.routers import (
 def init_database() -> None:
     """Initialize database tables if they don't exist"""
     Base.metadata.create_all(bind=engine)
+    
 
 
 # ---------------------------------------------------------------------
