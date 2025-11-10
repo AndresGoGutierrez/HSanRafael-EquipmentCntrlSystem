@@ -10,7 +10,7 @@ class UserRole(str, Enum):
     TI = "ti"
     ADMINISTRADOR = "administrador"
 
-    def __srt__(self) -> str:
+    def __str__(self) -> str:
         return self.value
 
 
@@ -45,7 +45,7 @@ class User:
         role_hierarchy = {
             UserRole.ADMINISTRADOR: 3,
             UserRole.TI: 2,
-            UserRole.SEGUIDAD: 1,
+            UserRole.SEGURIDAD: 1,
         }
         return role_hierarchy.get(self.role, 0) >= role_hierarchy.get(required_role, 0)
 

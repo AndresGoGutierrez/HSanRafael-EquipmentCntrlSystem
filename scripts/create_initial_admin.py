@@ -19,7 +19,7 @@ from app.infrastructure.repositories.user_repository_impl import UserRepositoryI
 
 def create_admin_user() -> None:
     """Create the initial administrator user if it doesn't exist."""
-    print("🚀 Starting admin user creation process...\n")
+    print("Starting admin user creation process...\n")
 
     try:
         with SessionLocal() as db:
@@ -27,7 +27,7 @@ def create_admin_user() -> None:
 
             existing_admin = user_repository.get_by_username("admin")
             if existing_admin:
-                print("⚠️  Admin user already exists. No changes made.")
+                print("Admin user already exists. No changes made.")
                 return
 
             admin_user = User(
@@ -41,18 +41,18 @@ def create_admin_user() -> None:
 
             created_user = user_repository.create(admin_user)
 
-            print("✅ Admin user created successfully!")
-            print(f"   👤 Username: {created_user.username}")
-            print(f"   📧 Email: {created_user.email}")
-            print(f"   🧩 Role: {created_user.role.value}")
-            print("\n⚠️  Default password: 'Admin123!' — please change it immediately after first login.")
+            print("Admin user created successfully!")
+            print(f"Username: {created_user.username}")
+            print(f"Email: {created_user.email}")
+            print(f"Role: {created_user.role.value}")
+            print("\n Default password: 'Admin123!' — please change it immediately after first login.")
 
     except Exception as e:
-        print("❌ Error while creating admin user:")
+        print("Error while creating admin user:")
         print(f"   {e}")
         traceback.print_exc()
 
 
 if __name__ == "__main__":
-    print("🛠️  Creating initial administrator user...")
+    print("Creating initial administrator user...")
     create_admin_user()
