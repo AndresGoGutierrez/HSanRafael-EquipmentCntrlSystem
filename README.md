@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-* Create branch "andres-branch"
-=======
 # 🏥 Sistema de Control de Ingreso de Equipos Tecnológicos y Biomédicos Externos (PDS-006)
 
 ## 📘 Descripción General
@@ -149,4 +146,3 @@ Universidad Santo Tomás – Espacio Académico **Calidad de Software**.
 - **IEEE Std. 730-1989** — *Software Quality Assurance Plans*  
 - **IEEE Std. 829-2008** — *Software and System Test Documentation*  
 - **ISO/IEC 25010:2011** — *System and Software Quality Models*  
->>>>>>> 1567a202483b2f7befc07dcbd813a4be284c2825
