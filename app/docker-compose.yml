@@ -1,16 +1,33 @@
 version: "3.8"
 
 services:
+  # Prometheus service for collecting and storing application metrics
   prometheus:
     image: prom/prometheus
     container_name: equipment_prometheus
+
+    # Mount the local Prometheus configuration file into the container
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+    # Expose Prometheus UI on port 9090 (accessible at http://localhost:9090)
     ports:
       - "9090:9090"
 
+  # Grafana service for visualizing metrics collected by Prometheus
   grafana:
     image: grafana/grafana
     container_name: equipment_grafana
+
+    # Expose Grafana UI on port 3000 (accessible at http://localhost:3000)
     ports:
       - "3000:3000"
+
+    # Optional: You can add environment variables here for default credentials or provisioning
+    # environment:
+    #   - GF_SECURITY_ADMIN_USER=admin
+    #   - GF_SECURITY_ADMIN_PASSWORD=admin
+
+    # Optional: You can mount dashboards or data sources configuration if needed
+    # volumes:
+    #   - ./grafana/provisioning:/etc/grafana/provisioning

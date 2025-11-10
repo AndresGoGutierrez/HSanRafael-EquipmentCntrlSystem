@@ -8,7 +8,7 @@ pwd_context = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto",
     bcrypt__default_rounds=12,
-    bcrypt__truncate_error=True  # Esto hará que bcrypt lance un error si la contraseña es muy larga
+    bcrypt__truncate_error=True  # Raises error if password exceeds 72 bytes (bcrypt limitation)
 )
 
 
@@ -18,7 +18,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def get_password_hash(password: str) -> str:
-    """ "Hash a plain password"""
+    """Hash a plain password"""
     return pwd_context.hash(password)
 
 

@@ -10,7 +10,7 @@ class UserRole(str, Enum):
     TI = "ti"
     ADMINISTRADOR = "administrador"
 
-    def __srt__(self) -> str:
+    def __str__(self) -> str:
         return self.value
 
 

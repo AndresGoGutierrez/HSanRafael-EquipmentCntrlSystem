@@ -1,32 +1,46 @@
+from datetime import datetime
 from app.domain.entities.user import User, UserRole
-from datetime import datetime, timezone
+
 
 def test_user_creation_defaults():
+    """
+    Test that a User object is correctly created with default values.
+    """
     user = User(username="Admin", email="ADMIN@Test.com", full_name="Main Admin")
 
+    # Email should be normalized to lowercase
     assert user.username == "Admin"
-    assert user.email == "admin@test.com"  # debe normalizar a minúsculas
+    assert user.email == "admin@test.com"
     assert user.role == UserRole.ADMINISTRADOR
     assert user.is_active is True
     assert isinstance(user.created_at, datetime)
 
-def test_user_permission_hierarchy():
-    admin = User(username="admin", role=UserRole.ADMINISTRADOR)
-    ti = User(username="ti_user", role=UserRole.TI)
-    guard = User(username="guard", role=UserRole.SEGURIDAD)
 
-    # Admin tiene acceso a todo
+def test_user_permission_hierarchy():
+    """
+    Test the role-based permission hierarchy among different user roles.
+    """
+    admin = User(username="admin", role=UserRole.ADMINISTRADOR)
+    it_user = User(username="it_user", role=UserRole.TI)
+    security = User(username="security_user", role=UserRole.SEGURIDAD)
+
+    # Admin should have access to all roles
     assert admin.has_permission(UserRole.TI)
     assert admin.has_permission(UserRole.SEGURIDAD)
 
-    # TI no puede acceder a nivel admin
-    assert not ti.has_permission(UserRole.ADMINISTRADOR)
-    assert ti.has_permission(UserRole.SEGURIDAD)
+    # IT should not have admin-level access
+    assert not it_user.has_permission(UserRole.ADMINISTRADOR)
+    assert it_user.has_permission(UserRole.SEGURIDAD)
 
-    # Seguridad solo a su nivel
-    assert not guard.has_permission(UserRole.TI)
+    # Security should only have access at their own level
+    assert not security.has_permission(UserRole.TI)
 
-def test_user_repr():
+
+def test_user_repr_contains_username():
+    """
+    Test that the string representation of a User includes the username.
+    """
     user = User(username="test")
-    assert "<User" in repr(user)
-    assert "test" in repr(user)
+    representation = repr(user)
+    assert "<User" in representation
+    assert "test" in representation
