@@ -10,7 +10,7 @@ class EquipmentType(str, Enum):
 class EquipmentCategory(str, Enum):
     """Equipment category"""
     TECNOLOGICO = "tecnologico"
-    BIOMEDICO = "bioomedico"
+    BIOMEDICO = "biomedico"
 
 class Equipment: 
     """Equipment entity representing on equipment item in the inventory"""

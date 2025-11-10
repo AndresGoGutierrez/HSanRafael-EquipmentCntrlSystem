@@ -5,6 +5,8 @@ from datetime import datetime
 from typing import Optional
 from PIL import Image
 
+from azure.storage.blob import BlobServiceClient
+
 
 class StorageService:
     """
@@ -20,6 +22,31 @@ class StorageService:
         self._ensure_storage_directory()
 
     # --- Internal Utilities ---
+
+
+
+
+    def generate_unique_filename(self, filename: str) -> str:
+        extension = filename.split(".")[-1]
+        uid = uuid.uuid4()
+        name = os.path.splitext(filename)[0]
+        return f"{name}_{uid}.{extension}"
+
+    def upload_image(self, image_data: bytes, filename: str, folder: str = "images") -> str:
+        """Upload image (compatibility method)."""
+        unique_filename = self.generate_unique_filename(filename)
+        return self.save_image(image_data, unique_filename)
+    
+    def upload_qr_code(self, qr_bytes, filename):
+        """Uploads a QR code image under /qr_codes folder"""
+        return self.upload_image(image_data=qr_bytes, filename=filename, folder="qr_codes")
+
+
+
+
+
+
+
     def _ensure_storage_directory(self) -> None:
         """Ensure the storage directory exists."""
         os.makedirs(self.storage_path, exist_ok=True)
