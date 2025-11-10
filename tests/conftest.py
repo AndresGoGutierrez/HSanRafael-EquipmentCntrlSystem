@@ -1,26 +1,39 @@
 # tests/conftest.py
+import os
+import sys
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
-from app.core.database import Base, get_db  # ✅ importamos Base y get_db desde el módulo correcto
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from app.main import app
+from app.core.database import Base, get_db
 
-# Base de datos de prueba (SQLite temporal)
+# ------------------------------------------------------------
+# ✅ Configuración de entorno para permitir imports del proyecto
+# ------------------------------------------------------------
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# ------------------------------------------------------------
+# 🧪 Configuración de base de datos de prueba (SQLite temporal)
+# ------------------------------------------------------------
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-
-# Configuración del engine y la sesión de prueba
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# ✅ Fixture para crear y eliminar las tablas antes y después de las pruebas
+# ------------------------------------------------------------
+# 🔹 Fixture de configuración global de la base de datos
+# Crea las tablas antes de las pruebas y las elimina al finalizar
+# ------------------------------------------------------------
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
 
-# ✅ Fixture para obtener una sesión de base de datos aislada en cada test
+# ------------------------------------------------------------
+# 🔹 Fixture de sesión aislada para cada prueba
+# Permite rollback al finalizar cada test
+# ------------------------------------------------------------
 @pytest.fixture()
 def db_session():
     session = TestingSessionLocal()
@@ -29,10 +42,12 @@ def db_session():
     finally:
         session.close()
 
-# ✅ Fixture para el cliente de pruebas de FastAPI
+# ------------------------------------------------------------
+# 🔹 Fixture de cliente HTTP para pruebas de FastAPI
+# Sobrescribe la dependencia de la base de datos por la de prueba
+# ------------------------------------------------------------
 @pytest.fixture()
 def client():
-    # Reemplaza la dependencia de la DB real con la de prueba
     def override_get_db():
         db = TestingSessionLocal()
         try:
@@ -41,24 +56,4 @@ def client():
             db.close()
 
     app.dependency_overrides[get_db] = override_get_db
-    return TestClient(app)
-import os
-import sys
-
-# Add the project root to the PYTHONPATH
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-import pytest
-from fastapi.testclient import TestClient
-from app.main import create_app
-
-
-@pytest.fixture
-def app():
-    app = create_app()
-    return app
-
-
-@pytest.fixture
-def client(app):
     return TestClient(app)
