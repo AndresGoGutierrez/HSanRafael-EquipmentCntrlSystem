@@ -1,4 +1,4 @@
-from __future__ import annotations  # permite usar tipos futuros (para Python <3.11)
+from __future__ import annotations  # Allows the use of future types (for Python <3.11)
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional, Dict, Any

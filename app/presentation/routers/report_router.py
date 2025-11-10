@@ -11,7 +11,7 @@ from app.infrastructure.services.report_generator import ReportGenerator
 router = APIRouter(prefix="/reports", tags=["Reports"])
 
 
-# ✅ Reusable dependency for common report parameters
+# Reusable dependency for common report parameters
 def get_report_common_params(
     start_date: datetime = Query(..., description="Start date (ISO format)"),
     end_date: datetime = Query(..., description="End date (ISO format)"),

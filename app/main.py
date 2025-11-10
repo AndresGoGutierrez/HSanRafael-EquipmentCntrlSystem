@@ -16,7 +16,7 @@ from app.presentation.routers import (
 )
 
 # ---------------------------------------------------------------------
-# Database initialization
+#                             Database initialization
 # ---------------------------------------------------------------------
 def init_database() -> None:
     """Initialize database tables if they don't exist"""
@@ -24,7 +24,7 @@ def init_database() -> None:
 
 
 # ---------------------------------------------------------------------
-# Storage directory setup
+#                             Storage directory setup
 # ---------------------------------------------------------------------
 def init_storage() -> None:
     """Ensure storage directories exist for static content"""
@@ -32,7 +32,7 @@ def init_storage() -> None:
 
 
 # ---------------------------------------------------------------------
-# FastAPI application factory
+#                             FastAPI application factory
 # ---------------------------------------------------------------------
 def create_app() -> FastAPI:
     """Application factory to build and configure the FastAPI app"""
@@ -80,7 +80,7 @@ def create_app() -> FastAPI:
 
 
 # ---------------------------------------------------------------------
-# Application startup
+#                             Application startup
 # ---------------------------------------------------------------------
 init_database()
 init_storage()
