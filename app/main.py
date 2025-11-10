@@ -5,7 +5,7 @@ import os
 
 from app.core.config import settings
 from app.core.database import Base, engine
-from app.infrastructure import models  
+from app.infrastructure import models
 from app.presentation.routers import (
     auth_router,
     user_router,
@@ -16,10 +16,16 @@ from app.presentation.routers import (
 )
 
 # ---------------------------------------------------------------------
-#                             Database initialization
+# Monitoring dependencies
+# ---------------------------------------------------------------------
+from prometheus_fastapi_instrumentator import Instrumentator
+
+
+# ---------------------------------------------------------------------
+# Database initialization
 # ---------------------------------------------------------------------
 def init_database() -> None:
-    """Initialize database tables if they don't exist"""
+    """Initialize database tables if they don't exist."""
     Base.metadata.create_all(bind=engine)
 
 
@@ -27,7 +33,7 @@ def init_database() -> None:
 #                             Storage directory setup
 # ---------------------------------------------------------------------
 def init_storage() -> None:
-    """Ensure storage directories exist for static content"""
+    """Ensure storage directories exist for static content."""
     os.makedirs("./storage/equipment-images", exist_ok=True)
 
 
@@ -35,11 +41,11 @@ def init_storage() -> None:
 #                             FastAPI application factory
 # ---------------------------------------------------------------------
 def create_app() -> FastAPI:
-    """Application factory to build and configure the FastAPI app"""
+    """Application factory to build and configure the FastAPI app."""
     app = FastAPI(
         title=settings.APP_NAME,
         version=settings.APP_VERSION,
-        description="Sistema de Control de Equipos Hospitalarios - Hospital San Rafael de Tunja",
+        description="Hospital Equipment Control System API - Hospital San Rafael de Tunja",
     )
 
     # Configure CORS
@@ -75,6 +81,18 @@ def create_app() -> FastAPI:
     @app.get("/health", tags=["Monitoring"])
     def health_check():
         return {"status": "healthy"}
+
+    # -----------------------------------------------------------------
+    # Prometheus Metrics Setup (detailed per-endpoint)
+    # -----------------------------------------------------------------
+    instrumentator = Instrumentator(
+        should_group_status_codes=False,          # Muestra códigos separados (200, 404, etc.)
+        should_ignore_untemplated=False,          # Muestra rutas reales (/api/v1/equipment/12)
+        excluded_handlers=["/metrics", "/health"] # Ignora métricas internas
+    )
+
+    # Instrumenta y expone las métricas
+    instrumentator.instrument(app).expose(app, endpoint="/metrics")
 
     return app
 
