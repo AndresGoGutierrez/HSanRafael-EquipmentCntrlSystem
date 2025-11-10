@@ -26,7 +26,7 @@ router = APIRouter(prefix="/access", tags=["Access Control"])
 
 
 # ---------------------------------------------------------------------------
-# Entry registration
+#                             Entry registration
 # ---------------------------------------------------------------------------
 
 @router.post(
@@ -54,7 +54,7 @@ async def register_entry(
 
 
 # ---------------------------------------------------------------------------
-# Exit registration
+#                             Exit registration
 # ---------------------------------------------------------------------------
 
 @router.post("/exit", response_model=AccessRecordResponse)
@@ -78,7 +78,7 @@ async def register_exit(
 
 
 # ---------------------------------------------------------------------------
-# Active equipment
+#                             Active equipment
 # ---------------------------------------------------------------------------
 
 @router.get("/active", response_model=List[ActiveEquipmentResponse])
@@ -124,7 +124,7 @@ async def get_active_equipment(
 
 
 # ---------------------------------------------------------------------------
-# Expired equipment
+#                            Expired equipment
 # ---------------------------------------------------------------------------
 
 @router.get("/expired", response_model=List[ActiveEquipmentResponse])
@@ -165,7 +165,7 @@ async def get_expired_equipment(
 
 
 # ---------------------------------------------------------------------------
-# History by equipment
+#                             History by equipment
 # ---------------------------------------------------------------------------
 
 @router.get("/equipment/{equipment_id}/history", response_model=List[AccessRecordResponse])
@@ -181,7 +181,7 @@ async def get_equipment_history(
 
 
 # ---------------------------------------------------------------------------
-# History by user
+#                             History by user
 # ---------------------------------------------------------------------------
 
 @router.get("/user/{user_id}/history", response_model=List[AccessRecordResponse])
@@ -197,7 +197,7 @@ async def get_user_history(
 
 
 # ---------------------------------------------------------------------------
-# Records by date range
+#                             Records by date range
 # ---------------------------------------------------------------------------
 
 @router.get("/date-range", response_model=List[AccessRecordResponse])
@@ -214,7 +214,7 @@ async def get_records_by_date_range(
 
 
 # ---------------------------------------------------------------------------
-# Forced exit (admin only)
+#                             Forced exit (admin only)
 # ---------------------------------------------------------------------------
 
 @router.post("/force-exit/{record_id}", response_model=AccessRecordResponse)
