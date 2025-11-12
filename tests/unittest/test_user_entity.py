@@ -1,5 +1,8 @@
 """
 Unit tests for the User domain entity and UserRole permissions.
+
+This module validates the correct initialization and behavior of the User entity,
+including role-based permission checks and enum value integrity.
 """
 
 import unittest
@@ -8,10 +11,18 @@ from app.domain.entities.user import User, UserRole
 
 
 class TestUserEntity(unittest.TestCase):
-    """Tests related to creation and basic behavior of User entity."""
+    """
+    Unit tests for the User entity.
+
+    These tests verify that User instances are correctly initialized,
+    handle activation status properly, and ensure the UserRole enum
+    exposes the expected values.
+    """
 
     def test_create_user(self):
-        """User creation initializes all fields correctly."""
+        """
+        Test that creating a User initializes all expected fields correctly.
+        """
         user = User(
             id=1,
             username="testuser",
@@ -30,13 +41,17 @@ class TestUserEntity(unittest.TestCase):
         self.assertIsInstance(user.created_at, datetime)
 
     def test_user_role_enum_values(self):
-        """UserRole enum must expose correct values."""
+        """
+        Test that UserRole enum exposes the correct string values.
+        """
         self.assertEqual(UserRole.SEGURIDAD.value, "seguridad")
         self.assertEqual(UserRole.TI.value, "ti")
         self.assertEqual(UserRole.ADMINISTRADOR.value, "administrador")
 
     def test_inactive_user(self):
-        """User should allow marking as inactive."""
+        """
+        Test that a User can be created with an inactive status.
+        """
         user = User(
             id=1,
             username="inactive",
@@ -51,10 +66,17 @@ class TestUserEntity(unittest.TestCase):
 
 
 class TestUserRolePermissions(unittest.TestCase):
-    """Tests related to role hierarchy and permission rules."""
+    """
+    Unit tests for role hierarchy and permission behavior in UserRole.
+
+    These tests ensure that permissions are enforced according to
+    the hierarchy defined in the domain logic.
+    """
 
     def setUp(self):
-        """Creates users for re-use across all tests."""
+        """
+        Initialize users with different roles for permission tests.
+        """
         self.admin_user = User(
             id=1, username="admin", email="admin@test.com",
             full_name="Admin User", role=UserRole.ADMINISTRADOR,
@@ -72,23 +94,31 @@ class TestUserRolePermissions(unittest.TestCase):
         )
 
     def test_permissions_same_role(self):
-        """Users should always be able to perform actions of their own role."""
+        """
+        Test that a user can always perform actions allowed to their own role.
+        """
         self.assertTrue(self.ti_user.has_permission(UserRole.TI))
 
     def test_permissions_admin_can_access_all(self):
-        """Admin should have permissions for all roles."""
+        """
+        Test that the ADMINISTRADOR role has permission for all roles.
+        """
         self.assertTrue(self.admin_user.has_permission(UserRole.ADMINISTRADOR))
         self.assertTrue(self.admin_user.has_permission(UserRole.TI))
         self.assertTrue(self.admin_user.has_permission(UserRole.SEGURIDAD))
 
     def test_permissions_ti_has_limited_access(self):
-        """TI should have permission for TI and SEGURIDAD, not ADMINISTRADOR."""
+        """
+        Test that the TI role can access TI and SEGURIDAD, but not ADMINISTRADOR.
+        """
         self.assertFalse(self.ti_user.has_permission(UserRole.ADMINISTRADOR))
         self.assertTrue(self.ti_user.has_permission(UserRole.TI))
         self.assertTrue(self.ti_user.has_permission(UserRole.SEGURIDAD))
 
     def test_permissions_security_only_self(self):
-        """Security role should only have permissions for its own level."""
+        """
+        Test that the SEGURIDAD role can only perform actions of its own level.
+        """
         self.assertFalse(self.security_user.has_permission(UserRole.ADMINISTRADOR))
         self.assertFalse(self.security_user.has_permission(UserRole.TI))
         self.assertTrue(self.security_user.has_permission(UserRole.SEGURIDAD))
