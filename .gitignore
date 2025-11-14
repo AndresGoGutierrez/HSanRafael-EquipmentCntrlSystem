@@ -25,6 +25,9 @@ venv/
 env/
 ENV/
 
+venv312/
+.venv312/
+
 # Environment variables
 .env
 .env.local
@@ -55,3 +58,7 @@ htmlcov/
 
 # Alembic
 alembic/versions/*.pyc
+
+
+# Files 
+locustfile.py
