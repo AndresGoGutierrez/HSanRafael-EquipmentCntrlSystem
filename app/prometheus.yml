@@ -1,0 +1,18 @@
+global:
+  # The interval at which Prometheus scrapes (collects) metrics from all targets.
+  # A shorter interval provides more granular data but increases load.
+  scrape_interval: 5s
+
+scrape_configs:
+  # Define a job for scraping metrics from the FastAPI application.
+  - job_name: "fastapi_app"
+
+    # The HTTP path where metrics are exposed by the application.
+    # This should match the endpoint defined in your FastAPI app (e.g., /metrics).
+    metrics_path: "/metrics"
+
+    static_configs:
+      # List of targets (hosts and ports) where Prometheus should collect metrics.
+      # "host.docker.internal" allows Prometheus running in Docker to access the host machine.
+      # Port 8000 corresponds to the FastAPI application running with Uvicorn.
+      - targets: ["host.docker.internal:8000"]

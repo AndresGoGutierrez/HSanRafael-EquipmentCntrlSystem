@@ -4,7 +4,12 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+    bcrypt__default_rounds=12,
+    bcrypt__truncate_error=True  # Raises error if password exceeds 72 bytes (bcrypt limitation)
+)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -13,7 +18,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def get_password_hash(password: str) -> str:
-    """ "Hash a plain password"""
+    """Hash a plain password"""
     return pwd_context.hash(password)
 
 
