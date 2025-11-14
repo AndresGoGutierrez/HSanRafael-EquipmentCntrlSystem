@@ -40,7 +40,11 @@ def create_app() -> FastAPI:
         title=settings.APP_NAME,
         version=settings.APP_VERSION,
         description="Sistema de Control de Equipos Hospitalarios - Hospital San Rafael de Tunja",
+        openapi_url="/api/v1/openapi.json",
+        docs_url="/api/v1/docs",
+        redoc_url="/api/v1/redoc",
     )
+
 
     # Configure CORS
     app.add_middleware(
@@ -85,6 +89,37 @@ def create_app() -> FastAPI:
 init_database()
 init_storage()
 app = create_app()
+
+from fastapi.openapi.utils import get_openapi
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    
+    openapi_schema = get_openapi(
+        title=settings.APP_NAME,
+        version=settings.APP_VERSION,
+        description="API para control de equipos Hospital San Rafael",
+        routes=app.routes,
+    )
+
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    }
+
+    for route in openapi_schema["paths"]:
+        for method in openapi_schema["paths"][route]:
+            openapi_schema["paths"][route][method]["security"] = [{"BearerAuth": []}]
+
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
+
 
 if __name__ == "__main__":
     import uvicorn
